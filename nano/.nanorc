@@ -1,0 +1,47 @@
+# set linenumbers
+set smooth
+
+## Nanorc files
+include "/usr/share/nano/nanorc.nanorc"
+
+## C/C++
+include "/usr/share/nano/c.nanorc"
+
+## HTML
+include "/usr/share/nano/html.nanorc"
+
+## Patch files
+include "/usr/share/nano/patch.nanorc"
+
+## Manpages
+include "/usr/share/nano/man.nanorc"
+
+## Perl
+include "/usr/share/nano/perl.nanorc"
+
+## Python
+include "/usr/share/nano/python.nanorc"
+
+## Ruby
+include "/usr/share/nano/ruby.nanorc"
+
+## Java
+include "/usr/share/nano/java.nanorc"
+
+## Assembler
+include "/usr/share/nano/asm.nanorc"
+
+## Bourne shell scripts
+include "/usr/share/nano/sh.nanorc"
+
+syntax "comments" ".*"
+color blue "^#.*"
+
+## PHP
+include "/usr/share/nano/php.nanorc"
+## JavaScript
+#include "/usr/share/nano/javascript.nanorc"
+
+set autoindent
+set tabsize 4
+set tabstospaces
