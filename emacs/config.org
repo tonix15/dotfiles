@@ -1,0 +1,634 @@
+* List of Emacs configs
+
+** GNU ELPA Keyring
+#+BEGIN_SRC emacs-lisp
+  (use-package gnu-elpa-keyring-update
+    :ensure t)
+#+END_SRC
+
+** Disable Default Startup Buffer
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-echo-area-message t)
+  (setq initial-scratch-message nil)
+#+END_SRC
+
+** Default Encoding
+#+BEGIN_SRC emacs-lisp
+  (prefer-coding-system 'utf-8-unix)
+  (set-locale-environment "en_US.UTF-8")
+  (set-default-coding-systems 'utf-8-unix)
+  (set-selection-coding-system 'utf-8-unix)
+  (set-clipboard-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (setq buffer-file-coding-system 'utf-8)
+  (setq save-buffer-coding-system 'utf-8-unix)
+  (setq process-coding-system-alist
+        (cons '("grep" utf-8 . utf-8) process-coding-system-alist))
+#+END_SRC
+
+** Disable Automatic File Backups
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+#+END_SRC
+
+** Load Recent Files at Startup
+#+BEGIN_SRC emacs-lisp
+  (use-package init-open-recentf
+    :ensure t
+    :init (recentf-mode 1)
+    :config
+    (init-open-recentf))
+#+END_SRC
+
+** Editorconfig
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :ensure t
+    :config
+    (editorconfig-mode 1))
+#+END_SRC
+
+** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (setq projectile-indexing-method 'alien)
+    (setq projectile-completion-system 'ivy)
+    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (projectile-mode +1))
+
+  (use-package counsel-projectile
+    :ensure t)
+#+END_SRC
+
+** Change Tabs to Spaces
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+** Hide Menu Bar
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+#+END_SRC
+
+** Turn Off Ring Bell
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+** Set Scrolling to Scroll Line by Line
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 100)
+#+END_SRC
+
+** Highlight Current Line
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode t)
+#+END_SRC
+
+** Enable Line Number Globally
+#+BEGIN_SRC emacs-lisp
+  (global-linum-mode t)
+  (setq linum-format "%d ") ;; Put a space between Line Numbers and text
+#+END_SRC
+
+** Show Line and Column Numbers on the Mode Line
+#+BEGIN_SRC emacs-lisp
+  (line-number-mode 1)
+  (column-number-mode 1)
+#+END_SRC
+
+** Enable/Disable Buffer Word Wrap
+#+BEGIN_SRC emacs-lisp
+  (setq-default truncate-lines 1)
+#+END_SRC
+
+** Prettify Symbols (lambdas, etc...)
+#+BEGIN_SRC emacs-lisp
+  (global-prettify-symbols-mode t)
+#+END_SRC
+
+** Electric Pairs
+#+BEGIN_SRC emacs-lisp
+  (setq electric-pair-pairs '(
+                              (?\( . ?\))
+                              (?\[ . ?\])
+                              (?\" . ?\")
+                              ))
+  (electric-pair-mode t)
+#+END_SRC
+
+** Smartparens
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package smartparens
+  ;;   :hook
+  ;;   (after-init . smartparens-global-mode)
+  ;;   :config
+  ;;   (require 'smartparens-config)
+  ;;   (sp-pair "=" "=" :actions '(wrap))
+  ;;   (sp-pair "+" "+" :actions '(wrap))
+  ;;   (sp-pair "<" ">" :actions '(wrap))
+  ;;   (sp-pair "$" "$" :actions '(wrap)))
+#+END_SRC
+
+** SubWords
+#+BEGIN_SRC emacs-lisp
+  (global-subword-mode 1)
+#+END_SRC
+
+** Copy Whole Line
+#+BEGIN_SRC emacs-lisp
+  (defun copy-whole-line ()
+    (interactive)
+    (save-excursion
+      (kill-new
+       (buffer-substring
+        (point-at-bol)
+        (point-at-eol)))))
+  (global-set-key (kbd "C-c w l") 'copy-whole-line)
+#+END_SRC
+
+** XClip
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package xclip
+  ;;   :if (eq system-type 'gnu/linux)
+  ;;   :config
+  ;;   (xclip-mode 1))
+#+END_SRC
+
+** Hungry Delete
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :ensure t
+    :config (global-hungry-delete-mode))
+#+END_SRC
+
+** Org Mode Emacs Lisp Snippets
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'org-structure-template-alist
+               '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+#+END_SRC
+
+** Enable IDO
+#+BEGIN_SRC emacs-lisp
+  ;; (setq ido-enable-flex-matching nil)
+  ;; (setq ido-create-new-buffer 'always)
+  ;; (setq ido-everywhere t)
+  ;; (ido-mode -1)
+#+END_SRC
+
+** Enable iBuffer
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (setq ibuffer-saved-filter-groups
+        (quote (("default"
+                 ("dired" (mode . dired-mode))
+                 ("org" (name . "^.*org$"))
+                 ("web" (or (mode . web-mode) (mode . j2s-mode)))
+                 ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+                 ("mu4e" (name . "\*mu4e\*"))
+                 ("programming" (or
+                                 (mode . python-mode)
+                                 (mode . php-mode)
+                                 (mode . go-mode)))
+                 ("emacs" (or
+                           (name . "^\\*scratch\\*$")
+                           (name . "^\\*Messages\\*$")))))))
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-auto-mode 1)
+              (ibuffer-switch-to-saved-filter-groups "default")))
+#+END_SRC
+
+** Rainbow
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+    :ensure t
+    :init (rainbow-delimiters-mode 1))
+#+END_SRC
+
+** Ivy, Swiper, Counsel
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :init (ivy-mode 1)
+    :config
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)) ;; resumes the last Ivy-Based completion.
+
+  (use-package swiper
+    :ensure t
+    :requires ivy
+    :config
+    (global-set-key (kbd "C-s") 'swiper))
+
+  (use-package counsel
+    :ensure t
+    :requires (ivy swiper)
+    :config
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file))
+#+END_SRC
+
+** Kill All Buffers
+#+BEGIN_SRC emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-c k b") 'kill-all-buffers)
+#+END_SRC
+
+** Kill Ring
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package popup-kill-ring
+  ;;  :ensure t
+  ;;  :bind ("M-y" . popup-kill-ring))
+  (use-package counsel
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
+#+END_SRC
+
+** Avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind
+    ("M-s" . avy-goto-char))
+#+END_SRC
+
+** Keyboard Shortcut to Reload Config
+#+BEGIN_SRC emacs-lisp
+  ;; Open Config File
+  (defun open-config ()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'open-config)
+
+  ;; Reload Config File
+  (defun reload-config ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'reload-config)
+#+END_SRC
+
+** Smart Window Switching
+#+BEGIN_SRC emacs-lisp
+  (use-package switch-window
+    :ensure t
+    :config
+    (setq switch-window-input-style 'minibuffer)
+    (setq switch-window-increase 4)
+    (setq switch-window-threshold 2)
+    (setq switch-window-shortcut-style 'qwerty)
+    (setq switch-window-qwerty-shortcuts
+          '("a" "s" "d" "f" "j" "k" "l"))
+    :bind
+    ([remap other-window] . switch-window))
+#+END_SRC
+
+** Window Splitting and Move Cursor to New Window
+#+BEGIN_SRC emacs-lisp
+  (defun split-window-horizontal-follow-cursor ()
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 2") 'split-window-horizontal-follow-cursor)
+
+  (defun split-window-vertical-follow-cursor ()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 3") 'split-window-vertical-follow-cursor)
+#+END_SRC
+
+** S The Long Lost Emacs String Manipulation Library
+#+BEGIN_SRC emacs-lisp
+  (use-package s
+    :ensure t)
+#+END_SRC
+
+** Hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :ensure t)
+#+END_SRC
+
+** Ivy Hydra
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy-hydra
+    :ensure t)
+#+END_SRC
+
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-x gf" . 'magit-status))
+#+END_SRC
+
+** Git Gutter
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter
+    :ensure t
+    :init (global-git-gutter-mode +1))
+#+END_SRC
+
+** Install Snippets
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (use-package yasnippet-snippets
+      :ensure t)
+    (yas-reload-all)
+    (add-hook 'prog-mode-hook #'yas-minor-mode)
+    (add-hook 'org-mode-hook #'yas-minor-mode))
+#+END_SRC
+
+** FlyCheck for Synxtax Checking
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode 1)
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode)
+    (add-to-list 'display-buffer-alist
+                 `(,(rx bos "*Flycheck errors*" eos)
+                   (display-buffer-reuse-window
+                    display-buffer-in-side-window)
+                   (side . bottom)
+                   (reusable-frames . visible)
+                   (window-height . 0.33))))
+
+  ;; FlyCheck Color Mode Line
+  (use-package flycheck-color-mode-line
+    :ensure t
+    :requires flycheck
+    :config
+    (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+
+  ;; Flycheck Inline Mode
+  (use-package flycheck-inline
+    :ensure t
+    :requires flycheck
+    :config (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
+#+END_SRC
+
+** Auto Completion with Company Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :init 
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (setq company-selection-wrap-around t)
+    ;; make tab complete first, then cycle
+    ;; Rebind it to company-complete-common-or-cycle
+    (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+    (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+    (setq company-frontends
+          '(company-pseudo-tooltip-unless-just-one-frontend
+            company-preview-frontend
+            company-echo-metadata-frontend))
+    ;; Cancel Selections by typing non-matching characters
+    (setq company-require-match 'never)
+    :bind ("C-c SPC" . company-complete))
+
+  ;; (use-package company-php
+  ;;   :ensure t)
+#+END_SRC
+
+** Web Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.api\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode))
+    ; JSX syntax highlighting
+    (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+
+    (setq web-mode-engines-alist '(
+                                   ("php"    . "\\.phtml\\'")
+                                   ("blade"  . "\\.blade\\.")))
+    (setq web-mode-ac-sources-alist
+          '(("css" . (ac-source-css-property))
+            ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+    (setq web-mode-enable-auto-closing t)
+    (add-hook 'web-mode-hook 'bs-web-mode-hook))
+
+  (defun bs-web-mode-hook ()
+    (local-set-key '[backtab] 'indent-relative)
+    (setq indent-tabs-mode nil)
+    (setq web-mode-markup-indent-offset 4
+          web-mode-css-indent-offset 2
+          web-mode-code-indent-offset 4))
+
+#+END_SRC
+
+** Emmet
+#+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :config
+    (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup mode
+    (add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start with web-mode
+
+    ;; ReactJS JSX support for expanding className
+    (setq emmet-expand-jsx-classname t))
+#+END_SRC
+
+** Tide
+#+BEGIN_SRC emacs-lisp
+  (use-package tide
+    :ensure t
+    :after (typescript-mode company flycheck)
+    :hook
+    ((typescript-mode . tide-setup)
+     (typescript-mode . tide-hl-identifier-mode)
+     (before-save . tide-format-before-save)))
+#+END_SRC
+
+** Python Support with elpy
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :config
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode)
+    :init
+    (elpy-enable))
+#+END_SRC
+
+** Company-Jedi - Third Party package for Python Support
+#+BEGIN_SRC emacs-lisp
+  (use-package company-jedi
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'company/python-mode-hook))
+
+  (defun company/python-mode-hook()
+    (add-to-list 'company-backends 'company-jedi))
+#+END_SRC
+
+** All About PHP
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package php-mode
+  ;;   :ensure t
+  ;;   :init)
+
+  ;; (defun bs-php-mode-hook ()
+  ;;   (setq indent-tabs-mode nil)
+  ;;   (setq c-basic-offset 2)
+  ;;   (setq php-template-compatibility nil))
+
+  ;; (add-hook 'php-mode-hook 'bs-php-mode-hook)
+#+END_SRC
+
+** AC-PHP
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package ac-php
+  ;;   :ensure t
+  ;;   :requires (php-mode company-php)
+  ;;   :config
+  ;;   (add-hook 'php-mode-hook '(lambda ()
+  ;;                                 ;; Enable Company Mode
+  ;;                                 (company-mode t)
+
+  ;;                                 ;; Enable eldoc Support
+  ;;                                 (ac-php-core-eldoc-setup)
+
+  ;;                                 (set (make-local-variable 'company-backends)
+  ;;                                      '((company-ac-php-backend company-dabbrev-code)
+  ;;                                        company-capf company-files))
+  ;;                                 ;; Jump to definition (optional)
+  ;;                                 (define-key php-mode-map (kbd "M-]")
+  ;;                                   'ac-php-find-symbol-at-point)
+
+  ;;                                 ;; Return back (optional)
+  ;;                                 (define-key php-mode-map (kbd "M-[")
+  ;;                                   'ac-php-location-stack-back))))
+#+END_SRC
+
+** Php Extras
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package php-extras
+  ;;   :ensure t
+  ;;   :requires php-mode)cr
+#+END_SRC
+
+** Toggle Between Php-Mode and Web-Mode with f5
+#+BEGIN_SRC emacs-lisp
+  ;; (defun toggle-php-web-flavor-mode ()
+  ;;   (interactive)
+  ;;   "Toggle Between php-mode and web-mode"
+  ;;   (cond ((string= mode-name "PHP")
+  ;;          (web-mode))
+  ;;         ((string= mode-name "Web")
+  ;;          (php-mode))))
+  ;; (global-set-key [f5] 'toggle-php-web-flavor-mode)
+#+END_SRC
+
+** Golang
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package go-mode
+  ;;   :ensure t
+  ;;   :mode "\\.go\\'"
+  ;;   :custom (gofmt-command "goimports")
+  ;;   :bind (:map go-mode-map
+  ;;               ("C-c C-n" . go-run)
+  ;;               ("C-c ."   . go-test-current-test)
+  ;;               ("C-c f"   . go-test-current-file)
+  ;;               ("C-c a"   . go-test-current-project))
+  ;;   :config
+  ;;   (add-hook 'before-save-hook 'gofmt-before-save)
+  ;;   (add-hook 'go-mode-hook (lambda ()
+  ;;                             (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)))
+  ;;   (add-hook 'go-mode-hook 'lambda ()
+  ;;             (local-set-key (kbd "C-c i") 'go-to-imports))
+  ;;   (add-hook 'go-mode-hook #'company-mode)
+  ;;   (add-hook 'go-mode-hook (lambda ()
+  ;;             (local-set-key (kbd "M-.") 'godef-jump)))
+
+
+  ;;   (use-package gotest
+  ;;     :ensure t)
+
+  ;;   (use-package go-tag
+  ;;     :ensure t
+  ;;     :config
+  ;;     (setq go-tag-args (list "-transform" "camelcase"))))
+
+  ;; (use-package go-errcheck
+  ;;   :ensure t)
+
+  ;; (use-package go-eldoc
+  ;;   :ensure t
+  ;;   :config (add-hook 'go-mode-hook 'go-eldoc-setup))
+
+  ;; (use-package go-projectile
+  ;;   :ensure t
+  ;;   :config
+  ;;   (go-projectile-set-gopath)
+  ;;   (go-projectile-tools-add-path))
+
+  ;; (use-package company-go
+  ;;     :ensure t
+  ;;     :config (add-hook 'go-mode-hook (lambda ()
+  ;;                                       (set (make-local-variable 'company-backends) '(company-go))
+  ;;                                       (company-mode))))
+#+END_SRC
+
+** Go LSP - Integration with Gopls
+#+BEGIN_SRC emacs-lisp
+  (use-package ls-mode
+    :commands (lsp lsp-deferred)
+    :config
+    (add-hook 'python-mode-hook #'lsp-deferred))
+    ;; (add-hook 'go-mode-hook #'lsp-deferred))
+
+  (use-package lsp-ui
+    :commands lsp-ui-mode)
+
+  (use-package company-lsp
+    :commands  company-lsp)
+#+END_SRC
+
+** Go Flycheck
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package flycheck-gometalinter
+  ;;   :ensure t)
+
+  ;; (use-package flycheck-golangci-lint
+  ;;   :ensure t
+  ;;   :hook (go-mode . flycheck-golangci-lint-setup))
+#+END_SRC
