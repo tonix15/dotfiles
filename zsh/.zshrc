@@ -128,6 +128,11 @@ export TERM=xterm-256color
 
 source ~/.zsh_aliases
 
+# use emacsclient as editor
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -t"          # $EDITOR opens in terminal
+export VISUAL="emacsclient -c -a emacs" # $VISUAL opens in GUI mode
+
 # Start ssh-agent automatically and make sure only one
 # ssh-agent process runs at a time.
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
