@@ -1,12 +1,5 @@
 ;;; package --- init.el config
 
-; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
-(require 'gnutls)
-(add-to-list 'gnutls-trustfiles "/usr/local/libressl/cert.pem")
-
-;; (setq package-check-signature nil)
-
 (require 'package)
 (setq package-enable-at-startup nil)
 (add-to-list 'package-archives
@@ -18,11 +11,6 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; Server Mode
-;; (use-package server
-;;  :ensure nil
-;;  :hook (after-init . server-mode))
-
 ;; Load which-key
 (use-package which-key
   :ensure t
@@ -33,9 +21,6 @@
 
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
 
-(put 'narrow-to-region 'disabled nil)
-
-;;; init.el ends here
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -56,3 +41,5 @@
  )
 
 (load-theme 'material t)
+;;; init.el ends here
+
