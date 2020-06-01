@@ -68,7 +68,7 @@ ZSH_THEME="ys"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git colored-man-pages colorize gnu-utils tmux ufw)
+plugins=(git colored-man-pages colorize gnu-utils tmux)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -127,3 +127,12 @@ source $ZSH/oh-my-zsh.sh
 export TERM=xterm-256color
 
 source ~/.zsh_aliases
+
+# Start ssh-agent automatically and make sure only one
+# ssh-agent process runs at a time.
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > "$XDG_RUNTIME_DIR/ssh-agent.env"
+fi
+if [[ ! "$SSH_AUTH_SOCK" ]]; then
+    source "$XDG_RUNTIME_DIR/ssh-agent.env" >/dev/null
+fi
