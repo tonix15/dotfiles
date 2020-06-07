@@ -1,0 +1,430 @@
+* Collections of my emacs configurations
+
+** Core
+*** Turn Off Ring Bell
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+END_SRC
+
+*** Disable Automatic File Backups
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-files nil)
+  (setq auto-save-default nil)
+#+END_SRC
+
+*** Hide Menu Bar
+#+BEGIN_SRC emacs-lisp
+  (menu-bar-mode -1)
+#+END_SRC
+
+*** Change Tabs to Spaces
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+*** Highlight Current Line
+#+BEGIN_SRC emacs-lisp
+  (global-hl-line-mode t)
+#+END_SRC
+
+*** Enable Line Number Globally
+#+BEGIN_SRC emacs-lisp
+  (global-display-line-numbers-mode)
+  (setq display-line-numbers 'relative)
+#+END_SRC
+
+*** Show Line and Column Numbers on the Mode Line
+#+BEGIN_SRC emacs-lisp
+  (line-number-mode 1)
+  (column-number-mode 1)
+#+END_SRC
+
+*** Enable/Disable Buffer Word Wrap
+#+BEGIN_SRC emacs-lisp
+  (setq-default truncate-lines t)
+#+END_SRC
+
+*** Keyboard Shortcut to Reload Config
+#+BEGIN_SRC emacs-lisp
+  ;; Open Config File
+  (defun open-config ()
+    (interactive)
+    (find-file "~/.dotfiles/emacs/custom.org"))
+  (global-set-key (kbd "C-c e") 'open-config)
+
+  ;; Reload Config File
+  (defun reload-config ()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.dotfiles/emacs/custom.org")))
+  (global-set-key (kbd "C-c r") 'reload-config)
+#+END_SRC
+
+*** Enable iBuffer
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+  (setq ibuffer-saved-filter-groups
+        (quote (("default"
+                 ("dired" (mode . dired-mode))
+                 ("org" (name . "^.*org$"))
+                 ("web" (or (mode . web-mode) (mode . j2s-mode)))
+                 ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+                 ("mu4e" (name . "\*mu4e\*"))
+                 ("programming" (or
+                                 (mode . python-mode)
+                                 (mode . php-mode)
+                                 (mode . go-mode)))
+                 ("emacs" (or
+                           (name . "^\\*scratch\\*$")
+                           (name . "^\\*Messages\\*$")))))))
+  (add-hook 'ibuffer-mode-hook
+            (lambda ()
+              (ibuffer-auto-mode 1)
+              (ibuffer-switch-to-saved-filter-groups "default")))
+#+END_SRC
+
+*** Kill All Buffers
+#+BEGIN_SRC emacs-lisp
+  (defun kill-all-buffers ()
+    (interactive)
+    (mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-c k b") 'kill-all-buffers)
+#+END_SRC
+
+*** Enable/Disable Buffer Word Wrap
+#+BEGIN_SRC emacs-lisp
+  (setq-default truncate-lines t)
+#+END_SRC
+
+*** SubWords
+#+BEGIN_SRC emacs-lisp
+  (global-subword-mode 1)
+#+END_SRC
+
+*** Copy Whole Line
+#+BEGIN_SRC emacs-lisp
+  (defun copy-whole-line ()
+    (interactive)
+    (save-excursion
+      (kill-new
+       (buffer-substring
+        (point-at-bol)
+        (point-at-eol)))))
+  (global-set-key (kbd "C-c w l") 'copy-whole-line)
+#+END_SRC
+
+*** Bind indent-relative to f5
+#+BEGIN_SRC emacs-lisp
+  (global-set-key [f5] 'indent-relative)
+#+END_SRC
+
+
+
+** Aesthetics
+*** All the icons
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons
+    :ensure t)
+#+END_SRC
+
+*** Rainbow
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-mode
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-mode))
+
+  (use-package rainbow-delimiters
+    :ensure t
+    :init (rainbow-delimiters-mode 1))
+#+END_SRC
+
+
+** Enhancements
+*** Smart Window Switching
+#+BEGIN_SRC emacs-lisp
+  (use-package switch-window
+    :ensure t
+    :config
+    (setq switch-window-input-style 'minibuffer)
+    (setq switch-window-increase 4)
+    (setq switch-window-threshold 2)
+    (setq switch-window-shortcut-style 'qwerty)
+    (setq switch-window-qwerty-shortcuts
+          '("a" "s" "d" "f" "j" "k" "l"))
+    :bind
+    ([remap other-window] . switch-window))
+#+END_SRC
+
+*** Window Splitting and Move Cursor to New Window
+#+BEGIN_SRC emacs-lisp
+  (defun split-window-horizontal-follow-cursor ()
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 2") 'split-window-horizontal-follow-cursor)
+
+  (defun split-window-vertical-follow-cursor ()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
+  (global-set-key (kbd "C-x 3") 'split-window-vertical-follow-cursor)
+#+END_SRC
+
+*** Avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind
+    ("M-s" . avy-goto-char))
+#+END_SRC
+
+*** Ivy, Swiper, Counsel
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :init (ivy-mode 1)
+    :config
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "(%d/%d) ")
+    (global-set-key (kbd "C-c C-r") 'ivy-resume)) ;; resumes the last Ivy-Based completion.
+
+  (use-package swiper
+    :ensure t
+    :requires ivy
+    :config
+    (global-set-key (kbd "C-s") 'swiper))
+
+  (use-package counsel
+    :ensure t
+    :requires (ivy swiper)
+    ;; counsel kill ring
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line))  
+    :config
+    (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    (global-set-key (kbd "M-x") 'counsel-M-x)
+    (global-set-key (kbd "C-x C-f") 'counsel-find-file))
+#+END_SRC
+
+*** Projectile
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :ensure t
+    :config
+    (setq projectile-indexing-method 'alien)
+    (setq projectile-completion-system 'ivy)
+    (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (projectile-mode +1))
+#+END_SRC
+
+*** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :bind ("C-x g" . 'magit-status))
+#+END_SRC
+
+*** Git Gutter
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter
+    :ensure t
+    :init (global-git-gutter-mode +1))
+#+END_SRC
+
+*** Hungry Delete
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :ensure t
+    :config (global-hungry-delete-mode))
+#+END_SRC
+
+*** Smartparens
+#+BEGIN_SRC emacs-lisp
+  (use-package smartparens
+    :ensure t
+    :config
+    (require 'smartparens-config)
+    (add-hook 'prog-mode-hook #'smartparens-mode))
+#+END_SRC
+
+*** Install Snippets
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (use-package yasnippet-snippets
+      :ensure t)
+    (yas-reload-all)
+    (add-hook 'prog-mode-hook #'yas-minor-mode)
+    (add-hook 'org-mode-hook #'yas-minor-mode))
+#+END_SRC
+
+*** Simpleclip - Simplefied access to the system clipboard
+#+BEGIN_SRC emacs-lisp
+  ;; Super-c to copy
+  ;; Super-x or Super-v to copy
+  (use-package simpleclip
+    :ensure t
+    :init
+    (simpleclip-mode 1))
+
+#+END_SRC
+
+
+** Programming
+*** Company mode for buffer completion
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :init 
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+    (setq company-idle-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (setq company-selection-wrap-around t)
+    ;; make tab complete first, then cycle
+    ;; Rebind it to company-complete-common-or-cycle
+    (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+    (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
+    (setq company-frontends
+          '(company-pseudo-tooltip-unless-just-one-frontend
+            company-preview-frontend
+            company-echo-metadata-frontend))
+    ;; Cancel Selections by typing non-matching characters
+    (setq company-require-match 'never)
+    ;; Add Company Box hook
+    (add-hook 'company-mode-hook 'company-box-mode)
+    :bind ("C-c SPC" . company-complete))
+
+  ;; Company box
+  (use-package company-box
+    :ensure t)
+#+END_SRC
+
+*** Flycheck
+#+BEGIN_SRC emacs-lisp
+  (use-package flycheck
+    :ensure t
+    :init (global-flycheck-mode 1)
+    :config
+    (add-hook 'after-init-hook #'global-flycheck-mode)
+    (add-to-list 'display-buffer-alist
+                 `(,(rx bos "*Flycheck errors*" eos)
+                   (display-buffer-reuse-window
+                    display-buffer-in-side-window)
+                   (side . bottom)
+                   (reusable-frames . visible)
+                   (window-height . 0.33))))
+
+  ;; FlyCheck Color Mode Line
+  (use-package flycheck-color-mode-line
+    :ensure t
+    :requires flycheck
+    :config
+    (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
+
+  ;; Flycheck Inline Mode
+  (use-package flycheck-inline
+    :ensure t
+    :requires flycheck
+    :config (add-hook 'flycheck-mode-hook #'flycheck-inline-mode))
+
+#+END_SRC
+
+*** Python
+**** jedi
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package jedi
+  ;;   :ensure t
+  ;;   :init
+  ;;   (add-hook 'python-mode-hook 'jedi:setup)
+  ;;   (add-hook 'python-mode-hook 'jedi:ac:setup))
+#+END_SRC
+
+**** Completion Backend for Python JEDI
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package company-jedi
+  ;;   :ensure t)
+
+  ;; (defun add/company-jedi-backend()
+  ;;   (add-to-list 'company-backends 'company-jedi))
+  ;; (add-hook 'python-mode-hook 'add/company-jedi-backend)
+#+END_SRC
+
+*** Python Support with elpy
+#+BEGIN_SRC emacs-lisp
+  (use-package elpy
+    :ensure t
+    :config
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode)
+    :init
+    (elpy-enable))
+#+END_SRC
+
+
+
+** Frontend
+*** Web Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.api\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode))
+    ; JSX syntax highlighting
+    (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
+
+    (setq web-mode-engines-alist '(
+                                   ("php"    . "\\.phtml\\'")
+                                   ("blade"  . "\\.blade\\.")))
+    (setq web-mode-ac-sources-alist
+          '(("css" . (ac-source-css-property))
+            ("html" . (ac-source-words-in-buffer ac-source-abbrev))))
+    (setq web-mode-enable-auto-closing t)
+    (add-hook 'web-mode-hook 'bs-web-mode-hook))
+
+  (defun bs-web-mode-hook ()
+    (local-set-key '[backtab] 'indent-relative)
+    (setq indent-tabs-mode nil)
+    (setq web-mode-markup-indent-offset 4
+          web-mode-css-indent-offset 2
+          web-mode-code-indent-offset 4))
+
+#+END_SRC
+
+*** Emmet
+#+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :ensure t
+    :config
+    (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup mode
+    (add-hook 'web-mode-hook 'emmet-mode) ;; Auto-start with web-mode
+
+    ;; ReactJS JSX support for expanding className
+    (setq emmet-expand-jsx-classname t))
+#+END_SRC
+
+*** Tide
+#+BEGIN_SRC emacs-lisp
+  (use-package tide
+    :ensure t
+    :after (typescript-mode company flycheck)
+    :hook
+    ((typescript-mode . tide-setup)
+     (typescript-mode . tide-hl-identifier-mode)
+     (before-save . tide-format-before-save)))
+#+END_SRC

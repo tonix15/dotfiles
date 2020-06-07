@@ -19,7 +19,8 @@
   :hook
   (after-init . which-key-mode))
 
-(org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
+;; (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
+(org-babel-load-file (expand-file-name "~/.dotfiles/emacs/custom.org"))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -32,7 +33,7 @@
     ("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" default)))
  '(package-selected-packages
    (quote
-    (emmet-mode company-jedi material-theme tide web-mode elpy yasnippet-snippets which-key use-package switch-window s rainbow-mode rainbow-delimiters magit ivy-hydra init-open-recentf hungry-delete gnu-elpa-keyring-update git-gutter flycheck-inline flycheck-color-mode-line editorconfig counsel-projectile company avy))))
+    (simpleclip smartparens jedi all-the-icons emmet-mode company-jedi material-theme tide web-mode elpy yasnippet-snippets which-key use-package switch-window s rainbow-mode rainbow-delimiters magit ivy-hydra init-open-recentf hungry-delete gnu-elpa-keyring-update git-gutter flycheck-inline flycheck-color-mode-line editorconfig counsel-projectile company avy))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
