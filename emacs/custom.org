@@ -120,6 +120,12 @@
 
 
 ** Aesthetics
+*** Sublime themes for emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package sublime-themes
+    :ensure t)
+#+END_SRC
+
 *** All the icons
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons
@@ -309,13 +315,13 @@
             company-echo-metadata-frontend))
     ;; Cancel Selections by typing non-matching characters
     (setq company-require-match 'never)
-    ;; Add Company Box hook
-    (add-hook 'company-mode-hook 'company-box-mode)
     :bind ("C-c SPC" . company-complete))
 
   ;; Company box
   (use-package company-box
-    :ensure t)
+    :ensure t
+    :config
+    (add-hook 'company-mode-hook 'company-box-mode))
 #+END_SRC
 
 *** Flycheck
@@ -439,4 +445,20 @@
     ((typescript-mode . tide-setup)
      (typescript-mode . tide-hl-identifier-mode)
      (before-save . tide-format-before-save)))
+#+END_SRC
+
+*** Markdown
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :ensure t
+    :mode (("README\\.md'" . gfm-mode)
+           ("\\.md\\'" . markdown-mode)
+           ("\\.markdown\\'" . markdown-mode))
+    :init (setq markdown-command "multimarkdown"))
+#+END_SRC
+
+*** Markdown Preview Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-preview-mode
+    :ensure t)
 #+END_SRC
