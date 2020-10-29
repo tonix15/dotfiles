@@ -1,3 +1,10 @@
+# Vim
 alias vi="vim"
-alias emacs="emacs --debug-init"
+
+# Emacs
+# Redirect both stdout and strerr to null device
+# Last ampersand makes the process  run in background
+# Parenthesis around the command will make emacs to run in a subshell
+# alias emacs="(emacs --debug-init &> /dev/null &)"
+alias emacs=emacs --no-splash --debug-init 
 alias ec='emacsclient --create-frame --alternate-editor="" &'

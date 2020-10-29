@@ -6,6 +6,29 @@
   (setq ring-bell-function 'ignore)
 #+END_SRC
 
+*** Disable Default Startup Buffer
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-echo-area-message t)
+  (setq initial-scratch-message nil)
+#+END_SRC
+
+*** Default Encoding
+#+BEGIN_SRC emacs-lisp
+  (prefer-coding-system 'utf-8-unix)
+  (set-locale-environment "en_US.UTF-8")
+  (set-default-coding-systems 'utf-8-unix)
+  (set-selection-coding-system 'utf-8-unix)
+  (set-clipboard-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (setq buffer-file-coding-system 'utf-8)
+  (setq save-buffer-coding-system 'utf-8-unix)
+  (setq process-coding-system-alist
+        (cons '("grep" utf-8 . utf-8) process-coding-system-alist))
+#+END_SRC
+
 *** Disable Automatic File Backups
 #+BEGIN_SRC emacs-lisp
   (setq make-backup-files nil)
@@ -14,7 +37,12 @@
 
 *** Hide Menu Bar
 #+BEGIN_SRC emacs-lisp
-  (menu-bar-mode -1)
+  (menu-bar-mode t)
+#+END_SRC
+
+*** Hide Toolbar
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
 #+END_SRC
 
 *** Change Tabs to Spaces
@@ -136,6 +164,12 @@
   (use-package rainbow-delimiters
     :ensure t
     :init (rainbow-delimiters-mode 1))
+#+END_SRC
+
+*** Emacs Color Themes
+#+BEGIN_SRC emacs-lisp
+  (use-package sublime-themes
+    :ensure t)
 #+END_SRC
 
 
@@ -260,6 +294,7 @@
     (use-package yasnippet-snippets
       :ensure t)
     (yas-reload-all)
+    (add-hook 'go-mode-hook #'yas-minor-mode)
     (add-hook 'prog-mode-hook #'yas-minor-mode)
     (add-hook 'org-mode-hook #'yas-minor-mode))
 #+END_SRC
@@ -285,10 +320,50 @@
     ;; Theme config
     (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
     (global-set-key [f8] 'neotree-toggle))
+
+  (defun my/disable-line-numbers (&optional dummy)
+    (display-line-numbers-mode -1))
+  (add-hook 'neo-after-create-hook 'my/disable-line-numbers)
+#+END_SRC
+*Keybindings*
+*n* next line, *p* previous line
+*SPC* or *RET* open current item if it is a file. Fold/Unfold item if it is a directory
+*U* Go up a directory
+*g* Refresh
+*A* Maximize/Minimize the Neotree Window
+*H* Toggle display hidden files
+*O* Recursively open a directory
+*C-c C-n* Create a file or directory if filename ends with a '/'
+*C-c C-d* Delete a file or or a directory
+*C-c C-r* Rename a file or directory
+*C-c C-c* Change the root directory
+*C-c C-p* Copy a file or a directory
+
+*** Emacs Htmlize
+#+BEGIN_SRC emacs-lisp
+  (use-package htmlize
+    :ensure t)
+#+END_SRC
+
+*** rg - Ripgrep in Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package rg
+    :ensure t
+    :config
+    (rg-enable-default-bindings))
 #+END_SRC
 
 
 ** Programming
+*** Yaml Mode
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :ensure t
+    :config
+    (add-hook 'yaml-mode-hook (lambda ()
+                                (define-key yaml-mode-map "\C-m" 'newline-and-indent))))
+#+END_SRC
+
 *** Company mode for buffer completion
 #+BEGIN_SRC emacs-lisp
   (use-package company
@@ -296,9 +371,10 @@
     :init 
     (add-hook 'after-init-hook 'global-company-mode)
     :config
-    (setq company-idle-delay 0)
-    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0.0)
+    (setq company-minimum-prefix-length 1.5)
     (setq company-selection-wrap-around t)
+
     ;; make tab complete first, then cycle
     ;; Rebind it to company-complete-common-or-cycle
     (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
@@ -307,15 +383,73 @@
           '(company-pseudo-tooltip-unless-just-one-frontend
             company-preview-frontend
             company-echo-metadata-frontend))
+
     ;; Cancel Selections by typing non-matching characters
     (setq company-require-match 'never)
-    ;; Add Company Box hook
-    (add-hook 'company-mode-hook 'company-box-mode)
-    :bind ("C-c SPC" . company-complete))
+
+    (add-hook 'go-mode-hook (lambda ()
+              (set (make-local-variable 'company-backends) '(company-go))
+              (company-mode))))
+  ;; :bind ("C-c SPC" . company-complete))
 
   ;; Company box
   (use-package company-box
-    :ensure t)
+    :ensure t
+    :config
+    ;; Add Company Box hook
+    (add-hook 'company-mode-hook 'company-box-mode))
+
+  (use-package company-go
+    :ensure t
+    :config
+    (custom-set-faces
+     '(company-preview
+       ((t (:foreground "darkgray" :underline t))))
+     '(company-preview-common
+       ((t (:inherit company-preview))))
+     '(company-tooltip
+       ((t (:background "lightgray" :foreground "black"))))
+     '(company-tooltip-selection
+       ((t (:background "steelblue" :foreground "white"))))
+     '(company-tooltip-common
+       ((((type x)) (:inherit company-tooltip :weight bold))
+        (t (:inherit company-tooltip))))
+     '(company-tooltip-common-selection
+       ((((type x)) (:inherit company-tooltip-selection :weight bold))
+        (t (:inherit company-tooltip-selection))))))
+#+END_SRC
+
+*** LSP Mode
+#+BEGIN_SRC emacs-lisp
+  ;; (setq lsp-keymap-prefix "C-c SPC")
+
+  ;; (use-package lsp-mode
+  ;;   :ensure t
+  ;;   :hook
+  ;;   (web-mode . lsp-deferred)
+  ;;   (go-mode . lsp-deferred)
+  ;;   ;; Enable which-key integration
+  ;;   (lsp-mode . lsp-enable-which-key-integration)
+  ;;   :config
+  ;;   (setq gc-cons-threshold 100000000)
+  ;;   :commands (lsp lsp-deferred))
+
+  ;; (use-package lsp-ui
+  ;;   :ensure t
+  ;;   :commands lsp-ui-mode)
+
+  ;; (use-package lsp-ivy
+  ;;   :ensure t
+  ;;   :commands lsp-ivy-workspace-symbol)
+#+END_SRC
+
+*** Eglot
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot
+    :ensure t
+    :config
+    (add-hook 'go-mode-hook 'eglot-ensure)
+    (add-hook 'python-mode-hook 'eglot-ensure))
 #+END_SRC
 
 *** Flycheck
@@ -379,6 +513,27 @@
     (elpy-enable))
 #+END_SRC
 
+*** Py-AutoPep8
+#+BEGIN_SRC emacs-lisp
+    (use-package py-autopep8
+      :ensure t
+      :config 
+      (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
+#+END_SRC
+
+*** Go Support
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.go\\'" . go-mode)))
+
+  (defun lsp-go-install-save-hooks ()
+    (add-hook 'before-save-hook #'lsp-format-buffer t t)
+    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+  (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+
+#+END_SRC
 
 
 ** Frontend
