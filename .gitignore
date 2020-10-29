@@ -1,2 +1,5 @@
 *~
 postinstall
+emacs/config.org
+emacs/custom.el
+emacs/config.el
