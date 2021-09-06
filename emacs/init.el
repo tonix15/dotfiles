@@ -30,6 +30,7 @@
 ;; disable line numbers for some modes
 (dolist (mode '(org-mode-hook
 		term-mode-hook
+		shell-mode-hook
 		eshell-mode-hook))
   (add-hook mode(lambda () (display-line-numbers-mode 0))))
 
@@ -83,3 +84,7 @@
 ;; add doom modeline
 (use-package doom-modeline
   :init (doom-modeline-mode 1))
+
+;; add rainbow delimiter
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
