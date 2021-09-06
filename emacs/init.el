@@ -1,46 +1,85 @@
 ;;; package --- init.el config
 
+;; (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
+					; (org-babel-load-file (expand-file-name "~/.dotfiles/emacs/custom.org"))
+
+;; User Interface
+(setq inhibit-startup-message t)
+
+(scroll-bar-mode -1) ; disable visible scrollbar
+(tool-bar-mode -1)   ; disable the toolbar
+(tooltip-mode -1)    ; disable tooltips
+(set-fringe-mode 10) ; give some breathing room
+
+(menu-bar-mode -1)   ; disable menu bar
+
+(setq visible-bell t) ; set up visual bell
+
+;; Make ESC quit prompts
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+; set font
+(set-face-attribute 'default nil :font "Fira Code")
+
+; set default theme
+(load-theme 'wombat t)
+
+;; enable line numbers
+(column-number-mode)
+(global-display-line-numbers-mode t)
+;; disable line numbers for some modes
+(dolist (mode '(org-mode-hook
+		term-mode-hook
+		eshell-mode-hook))
+  (add-hook mode(lambda () (display-line-numbers-mode 0))))
+
+;; Initialize package sources
 (require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
+
+; (setq package-enable-at-startup nil)
+
+(setq package-archives
+             '(("melpa" . "https://melpa.org/packages/")
+	       ("org" . "https://orgmode.org/elpa/")
+	       ("elpa" . "https://elpa.gnu.org/packages/")))
 
 (package-initialize)
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents)
   (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
 
 ;; Load which-key
 (use-package which-key
-  :ensure t
   :init (which-key-mode)
   :diminish which-key-mode
   :hook
   (after-init . which-key-mode))
 
-;; (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
-(org-babel-load-file (expand-file-name "~/.dotfiles/emacs/custom.org"))
+;; add ivy package
+(use-package ivy
+  :diminish
+  :bind (("C-s" . swiper)
+	 :map ivy-minibuffer-map
+	 ("TAB" . ivy-alt-done)
+	 ("C-l" . ivy-alt-done)
+	 ("C-j" . ivy-next-line)
+	 ("C-k" . ivy-previous-line)
+	 :map ivy-switch-buffer-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-l" . ivy-done)
+	 ("C-d" . ivy-switch-buffer-kill)
+	 :map ivy-reverse-i-search-map
+	 ("C-k" . ivy-previous-line)
+	 ("C-d" . ivy-reverse-i-search-kill))
+  :config
+  (ivy-mode 1))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes (quote (material)))
- '(custom-safe-themes
-   (quote
-    ("a24c5b3c12d147da6cef80938dca1223b7c7f70f2f382b26308eba014dc4833a" default)))
- '(package-selected-packages
-   (quote
-    (simpleclip smartparens jedi all-the-icons emmet-mode company-jedi material-theme tide web-mode elpy yasnippet-snippets which-key use-package switch-window s rainbow-mode rainbow-delimiters magit ivy-hydra init-open-recentf hungry-delete gnu-elpa-keyring-update git-gutter flycheck-inline flycheck-color-mode-line editorconfig counsel-projectile company avy))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-(load-theme 'material t)
-;;; init.el ends here
-
+;; add doom modeline
+(use-package doom-modeline
+  :init (doom-modeline-mode 1))
