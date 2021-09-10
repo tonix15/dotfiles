@@ -15,9 +15,6 @@
 
 (setq visible-bell t) ; set up visual bell
 
-;; Make ESC quit prompts
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
-
 ; set font
 (set-face-attribute 'default nil :font "Fira Code")
 
@@ -101,3 +98,31 @@
 ;; add rainbow delimiter
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
+
+;; icons package
+(use-package all-the-icons)
+
+;; Keybindings
+(use-package general)
+
+(general-define-key
+ "<escape>" 'keyboard-escape-quit
+ "C-M-b" 'counsel-switch-buffer)
+
+;; Projectile
+(use-package projectile
+  :diminish projectile-mode
+  :config (projectile-mode)
+  :bind-keymap
+  ("C-C p" . projectile-command-map)
+  :custom ((projectile-completion-system 'ivy));; use ivy with projectile
+  :init
+  (when (file-directory-p "~/workspace")
+    (setq projectile-project-search-path '("~/workspace")))
+  (setq projectile-switch-project-action #'projectile-dired))
+
+(use-package counsel-projectile
+  :config (counsel-projectile-mode))
+
+;; Magit
+(use-package magit)
