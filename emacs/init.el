@@ -43,6 +43,7 @@
 		eshell-mode-hook))
   (add-hook mode(lambda () (display-line-numbers-mode 0))))
 
+(global-subword-mode 1)
 ;; Initialize package sources
 (require 'package)
 
