@@ -115,12 +115,6 @@
 ;; icons package
 (use-package all-the-icons)
 
-;; Keybindings
-(use-package general)
-
-(general-define-key
- "<escape>" 'keyboard-escape-quit
- "C-M-b" 'counsel-switch-buffer)
 
 ;; Projectile
 (use-package projectile
@@ -165,3 +159,8 @@
   :after company
   :hook
   (company-mode . company-box-mode))
+;; Keybindings
+(use-package general)
+(general-define-key
+ "<escape>" 'keyboard-escape-quit
+ "C-M-b" 'counsel-switch-buffer)
