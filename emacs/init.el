@@ -44,6 +44,7 @@
   (add-hook mode(lambda () (display-line-numbers-mode 0))))
 
 (global-subword-mode 1)
+
 ;; Initialize package sources
 (require 'package)
 
@@ -92,6 +93,7 @@
   (ivy-mode 1))
 
 (use-package ivy-rich
+  :after counsel
   :init
   (ivy-rich-mode 1))
 
@@ -150,6 +152,7 @@
 
 (use-package lsp-ui
   :commands lsp-ui-mode)
+
 (use-package company
   :config
   (setq company-idle-delay 0.0)
@@ -177,6 +180,7 @@
   :config
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
 ;; Keybindings
 (use-package general)
 (general-define-key
