@@ -138,3 +138,18 @@
 
 ;; Magit
 (use-package magit)
+
+;; LSP
+(use-package lsp-mode
+  :commands (lsp lsp-deferred)
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :config
+  (lsp-enable-which-key-integration t)
+  ;;(defalias '-compose '-compose)
+  :hook
+  (typescript-mode . lsp-deferred)
+  (js-mode . lsp-deferred))
+
+(use-package lsp-ui
+  :commands lsp-ui-mode)
