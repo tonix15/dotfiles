@@ -154,3 +154,14 @@
 
 (use-package lsp-ui
   :commands lsp-ui-mode)
+(use-package company
+  :config
+  (setq company-idle-delay 0.0)
+  (setq company-minimum-prefix-length 1.5)
+  (setq company-selection-wrap-around t)
+  (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package company-box
+  :after company
+  :hook
+  (company-mode . company-box-mode))
