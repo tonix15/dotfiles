@@ -6,6 +6,18 @@
 ;; User Interface
 (setq inhibit-startup-message t)
 
+(prefer-coding-system 'utf-8-unix)
+(set-locale-environment "en_PH.UTF-8")
+(set-default-coding-systems 'utf-8-unix)
+(set-selection-coding-system 'utf-8-unix)
+(set-clipboard-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
+(setq save-buffer-coding-system 'utf-8-unix)
+(setq process-coding-system-alist
+      (cons '("grep" utf-8 . utf-8) process-coding-system-alist))
+
 (scroll-bar-mode -1) ; disable visible scrollbar
 (tool-bar-mode -1)   ; disable the toolbar
 (tooltip-mode -1)    ; disable tooltips
