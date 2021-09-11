@@ -159,6 +159,22 @@
   :after company
   :hook
   (company-mode . company-box-mode))
+
+;; Programming
+(use-package typescript-mode
+  :mode "\\.ts\\'"
+  :hook (typescript-mode . lsp-deferred)
+  :config
+  (setq typescript-indent-level 2))
+
+(use-package go-mode
+  :after lsp-mode company
+  :mode "\\.go\\'"
+  :hook
+  (go-mode . lsp-deferred)
+  :config
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
 ;; Keybindings
 (use-package general)
 (general-define-key
