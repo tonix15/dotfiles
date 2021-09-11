@@ -147,6 +147,7 @@
   (lsp-enable-which-key-integration t)
   ;;(defalias '-compose '-compose)
   :hook
+  (markdown-mode . lsp-deferred)
   (typescript-mode . lsp-deferred)
   (js-mode . lsp-deferred))
 
@@ -181,6 +182,14 @@
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
 
+(use-package markdown-mode
+  :after lsp
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "multimarkdown"))
 ;; Keybindings
 (use-package general)
 (general-define-key
