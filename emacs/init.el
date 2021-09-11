@@ -145,7 +145,6 @@
   (setq lsp-keymap-prefix "C-c l")
   :config
   (lsp-enable-which-key-integration t)
-  ;;(defalias '-compose '-compose)
   :hook
   (sh-mode . lsp-deferred)
   (markdown-mode . lsp-deferred)
@@ -156,11 +155,17 @@
   :commands lsp-ui-mode)
 
 (use-package company
-  :config
-  (setq company-idle-delay 0.0)
-  (setq company-minimum-prefix-length 1.5)
-  (setq company-selection-wrap-around t)
-  (add-hook 'after-init-hook 'global-company-mode))
+  :after lsp-mode
+  :hook (prog-mode . company-mode)
+  :bind
+  (:map company-active-map
+	("<tab>" . company-complete-selection))
+  (:map lsp-mode-map
+	("<tab>" . company-indent-or-complete-common))
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.0)
+  (company-selection-wrap-around t))
 
 (use-package company-box
   :after company
