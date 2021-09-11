@@ -147,6 +147,7 @@
   (lsp-enable-which-key-integration t)
   ;;(defalias '-compose '-compose)
   :hook
+  (sh-mode . lsp-deferred)
   (markdown-mode . lsp-deferred)
   (typescript-mode . lsp-deferred)
   (js-mode . lsp-deferred))
