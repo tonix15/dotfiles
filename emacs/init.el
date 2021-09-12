@@ -152,6 +152,7 @@
   (js-mode . lsp-deferred))
 
 (use-package lsp-ui
+  :after lsp-mode
   :commands lsp-ui-mode)
 
 (use-package company
@@ -196,11 +197,13 @@
 	 ("\\.markdown\\'" . markdown-mode))
   :init
   (setq markdown-command "multimarkdown"))
+
 ;; Keybindings
 (use-package general)
 (general-define-key
  "<escape>" 'keyboard-escape-quit
  "C-M-b" 'counsel-switch-buffer)
+
 ;; Org Mode
 (defun efs/org-mode-setup ()
   (org-indent-mode)
@@ -235,3 +238,5 @@
 ;; 		(org-level-7 . 1.1)
 ;; 		(org-level-8 . 1.1)))
 ;;   (set-face-attribute (car face) nil :font "Cantarell" :weight 'regular :height (cdr face)))
+		
+		
