@@ -201,3 +201,16 @@
 (general-define-key
  "<escape>" 'keyboard-escape-quit
  "C-M-b" 'counsel-switch-buffer)
+;; Org Mode
+(defun efs/org-mode-setup ()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 1)
+  (setq evil-auto-indent nil))
+
+(use-package org
+  :hook (org-mode . efs/org-mode-setup)
+  :config
+  (setq org-ellipsis " ▼"
+	org-hide-emphasis-markers t))
