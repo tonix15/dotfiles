@@ -202,7 +202,23 @@
 (use-package general)
 (general-define-key
  "<escape>" 'keyboard-escape-quit
- "C-M-b" 'counsel-switch-buffer)
+ "C-M-b" 'counsel-switch-buffer
+ "C-c k b" 'tonyo/kill-all-buffers
+ "C-c w l" 'tonyo/copy-whole-line)
+
+;; Kill all buffers
+(defun tonyo/kill-all-buffers()
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+
+;; Copy Whole Line
+(defun tonyo/copy-whole-line()
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (point-at-bol)
+      (point-at-eol)))))
 
 ;; Org Mode
 (defun efs/org-mode-setup ()
