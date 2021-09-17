@@ -221,7 +221,7 @@ Generic Completion Mechanism
 #+begin_src emacs-lisp
 
   (use-package ivy
-    :diminish
+    :diminish (ivy)
     :bind (("C-s" . swiper)
            :map ivy-minibuffer-map
            ("TAB" . ivy-alt-done)
@@ -356,16 +356,11 @@ A text based completion framework
 #+begin_src emacs-lisp
 
   (use-package company
-    :after lsp-mode
-    :hook (prog-mode . company-mode)
-    :bind
-    (:map company-active-map
-          ("<tab>" . company-complete-selection))
-    (:map lsp-mode-map
-          ("<tab>" . company-indent-or-complete-common))
+    :hook
+    (prog-mode . company-mode)
     :custom
     (company-minimum-prefix-length 1)
-    (company-idle-delay 0.0)
+    (company-idle-delay 0.1)
     (company-selection-wrap-around t))
 
 #+end_src
@@ -389,9 +384,11 @@ A company front-end with icons
 
   (use-package typescript-mode
     :mode "\\.ts\\'"
-    :hook (typescript-mode . lsp-deferred)
     :config
     (setq typescript-indent-level 2))
+    ; add dap-mode support
+    ;; (require 'dap-node)
+    ;; (dap-node-setup))
 
 #+end_src
 
@@ -399,13 +396,11 @@ A company front-end with icons
 #+begin_src emacs-lisp
 
   (use-package go-mode
-    :after lsp-mode company
     :mode "\\.go\\'"
-    :hook
-    (go-mode . lsp-deferred)
     :config
-    (add-hook 'before-save-hook #'lsp-format-buffer t t)
-    (add-hook 'before-save-hook #'lsp-organize-imports t t))
+    (add-hook 'before-save-hook #'lsp-format-buffer)
+    (add-hook 'before-save-hook #'lsp-organize-imports))
+  ;;  (require 'dap-go));add dap-mode support
 
 #+end_src
 
@@ -413,7 +408,6 @@ A company front-end with icons
 #+begin_src emacs-lisp
 
   (use-package markdown-mode
-    :after lsp
     :commands (markdown-mode gfm-mode)
     :mode (("README\\.md\\'" . gfm-mode)
            ("\\.md\\'" . markdown-mode)
