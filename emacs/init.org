@@ -465,7 +465,9 @@ Provides a more convenient method for binding keys
    "<escape>" 'keyboard-escape-quit
    "C-M-b" 'counsel-switch-buffer
    "C-c k b" 'tonyo/kill-all-buffers
-   "C-c w l" 'tonyo/copy-whole-line)
+   "C-c w l" 'tonyo/copy-whole-line
+   "C-x 2" 'tonyo/split-window-horizontal-fc
+   "C-x 3" 'tonyo/split-window-vertical-fc)
 
 #+end_src
 
@@ -563,5 +565,23 @@ Provides a more convenient method for binding keys
     (visual-line-mode 1)
     (setq evil-auto-indent nil))
 
+#+end_src
+
+** Window Switching and Move Cursor to New Window
+#+begin_src emacs-lisp
+
+  ; Split Window Horizontal
+  (defun tonyo/split-window-horizontal-fc ()
+    (interactive)
+    (split-window-below)
+    (balance-windows)
+    (other-window 1))
+
+  ; Split Window Vertical
+  (defun tonyo/split-window-vertical-fc ()
+    (interactive)
+    (split-window-right)
+    (balance-windows)
+    (other-window 1))
 #+end_src
 
