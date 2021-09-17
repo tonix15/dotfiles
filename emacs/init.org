@@ -337,17 +337,54 @@ Deals with parens pairs and tries to be smart about it
     (sh-mode . lsp-deferred)
     (markdown-mode . lsp-deferred)
     (typescript-mode . lsp-deferred)
-    (js-mode . lsp-deferred))
+    (js-mode . lsp-deferred)
+    (go-mode . lsp-deferred))
 
 #+end_src
 
-** LSP UI
+*** LSP UI
 UI integrations for Language Server Protocol
 
 #+begin_src emacs-lisp
-(use-package lsp-ui
-  :after lsp-mode
-  :commands lsp-ui-mode)
+
+  (use-package lsp-ui
+    :after lsp-mode
+    :hook
+    (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-position 'bottom))
+
+#+end_src
+
+*** Eglot
+an emacs LSP client that stays out of your way
+ 
+#+begin_src emacs-lisp
+
+  ;; (use-package eglot
+  ;;   :config
+  ;;   (add-hook 'typescript-mode-hook 'eglot-ensure)
+  ;;   (add-hook 'sh-mode-hook 'eglot-ensure)
+
+  ;;   (setq eglot-stay-out-of '(flymake))
+  ;;   (add-hook 'eglot-managed-mode-hook (lambda ()
+  ;;                                        (add-hook 'flymake-diagnostic-functions 'eglot-flymake-backend nil t))))
+#+end_src
+
+**** Eglot Diagnostics wth Flymake
+#+begin_src emacs-lisp
+
+  ;; (use-package flymake)
+
+  ;; (use-package flymake-go
+  ;;   :after flymake go-mode)
+#+end_src
+
+*** Dap Mode
+#+begin_src emacs-lisp
+
+  (use-package dap-mode)
+ 
 #+end_src
 
 ** Company
