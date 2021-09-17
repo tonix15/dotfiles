@@ -325,6 +325,8 @@ Deals with parens pairs and tries to be smart about it
 #+end_src
 
 ** Language Server Protocol
+
+*** LSP
 #+begin_src emacs-lisp
 
   (use-package lsp-mode
@@ -402,7 +404,7 @@ A text based completion framework
 
 #+end_src
 
-** Company Box
+*** Company Box
 A company front-end with icons
 
 #+begin_src emacs-lisp
@@ -501,13 +503,13 @@ Provides a more convenient method for binding keys
 #+begin_src emacs-lisp
 
   (use-package org
-    :hook (org-mode . efs/org-mode-setup)
-    :config
-    (setq org-ellipsis " ▼"
-          org-hide-emphasis-markers t)
+      :hook (org-mode . tonyo/org-mode-setup)
+      :config
+      (setq org-ellipsis " ▼"
+	    org-hide-emphasis-markers t)
 
-    (setq org-agenda-files
-          '("~/Documents/Work/Tasks.org")))
+      (setq org-agenda-files
+	    '("~/Documents/Work/Tasks.org")))
 
 #+end_src
 
