@@ -32,8 +32,6 @@
 
 #+end_src
 
-
-
 ** Set Encoding to utf-8
 #+begin_src emacs-lisp
 
@@ -49,6 +47,11 @@
   (setq process-coding-system-alist
         (cons '("grep" utf-8 . utf-8) process-coding-system-alist))
 
+#+end_src
+
+** Make all prompts y or n
+#+begin_src emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
 ** Initialize Package Sources
@@ -347,9 +350,12 @@ Deals with parens pairs and tries to be smart about it
     (setq lsp-keymap-prefix "C-c l")
     :config
     (lsp-enable-which-key-integration t)
+    (setq lsp-diagnostics-provider :flycheck)
     :hook
     (sh-mode . lsp-deferred)
     (markdown-mode . lsp-deferred)
+    (yaml-mode . lsp-deferred)
+    (dockerfile-mode . lsp-deferred)
     (typescript-mode . lsp-deferred)
     (js-mode . lsp-deferred)
     (go-mode . lsp-deferred))
@@ -429,6 +435,20 @@ A company front-end with icons
 
 #+end_src
 
+** Yasnippet
+#+begin_src emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode 1))
+#+end_src
+
+** Flycheck
+#+begin_src emacs-lisp
+  (use-package flycheck
+    :hook
+    (lsp-mode . flycheck-mode))
+#+end_src
+
 ** Languages Support
 
 *** Typesript
@@ -465,8 +485,21 @@ A company front-end with icons
            ("\\.md\\'" . markdown-mode)
            ("\\.markdown\\'" . markdown-mode))
     :init
-    (setq markdown-command "multimarkdown"))
+    (setq markdown-command "markdown"))
 
+#+end_src
+
+*** Dockerfile
+#+begin_src emacs-lisp
+  (use-package dockerfile-mode)
+#+end_src
+
+*** Yaml
+#+begin_src emacs-lisp
+  (use-package yaml-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.yml\\'". yaml-mode))
+    (add-to-list 'auto-mode-alist '("\\.yaml\\'". yaml-mode)))
 #+end_src
 
 ** General
@@ -479,6 +512,7 @@ Provides a more convenient method for binding keys
   (general-define-key
    "<escape>" 'keyboard-escape-quit
    "<f8>" 'treemacs
+   "M-y" 'counsel-yank-pop
    "C-M-b" 'counsel-switch-buffer
    "C-c k b" 'tonyo/kill-all-buffers
    "C-c w l" 'tonyo/copy-whole-line
@@ -601,3 +635,10 @@ Provides a more convenient method for binding keys
     (other-window 1))
 #+end_src
 
+** Setup Backups in one dir tree structure
+#+begin_src emacs-lisp
+  (setq backup-directory-alist
+        `((".*" . ,temporary-file-directory)))
+  (setq auto-save-file-name-transforms
+        `((".*" ,temporary-file-directory)))
+#+end_src
