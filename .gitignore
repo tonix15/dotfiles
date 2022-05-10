@@ -1,6 +1,7 @@
 *~
 postinstall
 emacs/config.org
+emacs/init.el
 *.el
 #*
 *.bak

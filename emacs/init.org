@@ -137,10 +137,11 @@
   ;;(load-theme 'wombat t)
 
   (use-package doom-themes
+    :if (display-graphic-p)
     :config
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
-  
+
     (load-theme 'doom-nord t)
 
     ;; enable flashing mode-line on errors
@@ -159,6 +160,7 @@
 #+begin_src emacs-lisp
 
   (use-package doom-modeline
+    :if (display-graphic-p)
     :init (doom-modeline-mode 1))
 
 #+end_src
@@ -385,6 +387,7 @@ UI integrations for Language Server Protocol
 #+begin_src emacs-lisp
 
   (use-package lsp-ui
+    :if (display-graphic-p)
     :after lsp-mode
     :hook
     (lsp-mode . lsp-ui-mode)
@@ -445,10 +448,10 @@ A company front-end with icons
 
 #+begin_src emacs-lisp
 
-  ;; (use-package company-box
-  ;;   :after company
-  ;;   :hook
-  ;;   (company-mode . company-box-mode))
+  (use-package company-box
+    :after company
+    :hook
+    (company-mode . company-box-mode))
 
 #+end_src
 
