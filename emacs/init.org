@@ -134,7 +134,24 @@
 ** Set Theme
 #+begin_src emacs-lisp
 
-  (load-theme 'wombat t)
+  ;;(load-theme 'wombat t)
+
+  (use-package doom-themes
+    :config
+    (setq doom-themes-enable-bold t
+          doom-themes-enable-italic t)
+  
+    (load-theme 'doom-nord t)
+
+    ;; enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+
+    ;; enable custom treemacs config
+    (setq doom-themes-treemacs-theme "doom-atom")
+    (doom-themes-treemacs-config)
+
+    ;; corrects org-mode's native fontification
+    (doom-themes-org-config))
 
 #+end_src
 
@@ -447,6 +464,9 @@ A company front-end with icons
   (use-package flycheck
     :hook
     (lsp-mode . flycheck-mode))
+
+  (use-package flycheck-golangci-lint
+    :hook (go-mode . flycheck-golangci-lint-setup))
 #+end_src
 
 ** Languages Support
