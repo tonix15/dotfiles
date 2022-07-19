@@ -6,9 +6,9 @@ alias vi="vim"
 # Last ampersand makes the process  run in background
 # Parenthesis around the command will make emacs to run in a subshell
 # alias emacs="(emacs --debug-init &> /dev/null &)"
-alias eq='emacs -q -l ~/.dotfiles/emacs/init.el --debug-init &'
+alias eq='emacs -q -l ~/.dotfiles/emacs/init.el --debug-init >/dev/null 2>&1 &'
 alias ed='emacs -q -l ~/.dotfiles/emacs/init.el --debug-init --daemon'
-alias ec='emacsclient --create-frame --alternate-editor="" &'
+alias ec='emacsclient --create-frame --alternate-editor=emacs "$@" >/dev/null 2>&1 &'
 
 # youtube-dl with aria2
 alias youtube-dl="youtube-dl --external-downloader aria2c --external-downloader-args '-c -j 3 -x 3 -s 3 -k 1M'"
@@ -16,3 +16,5 @@ alias youtube-dl="youtube-dl --external-downloader aria2c --external-downloader-
 alias cat=bat
 alias ls='exa --icons --group-directories-first'
 alias code=vscodium
+
+alias sudo=doas
