@@ -551,7 +551,8 @@ Provides a more convenient method for binding keys
    "C-c k b" 'tonyo/kill-all-buffers
    "C-c w l" 'tonyo/copy-whole-line
    "C-x 2" 'tonyo/split-window-horizontal-fc
-   "C-x 3" 'tonyo/split-window-vertical-fc)
+   "C-x 3" 'tonyo/split-window-vertical-fc
+   "C-x c" 'server-shutdown)
 
 #+end_src
 
@@ -667,6 +668,16 @@ Provides a more convenient method for binding keys
     (split-window-right)
     (balance-windows)
     (other-window 1))
+#+end_src
+
+** Graceful Emacs Daemon exit
+#+begin_src  emacs-lisp
+
+  (defun server-shutdown ()
+    "Save buffers, quit and shutdown (kill) server"
+    (interactive)
+    (save-some-buffers)
+    (kill-emacs))
 #+end_src
 
 ** Setup Backups in one dir tree structure
