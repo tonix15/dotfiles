@@ -142,7 +142,18 @@
     (setq doom-themes-enable-bold t
           doom-themes-enable-italic t)
 
-    (load-theme 'doom-nord t)
+    ;; (if (daemonp)
+    ;;     (add-hook 'after-make-frame-functions
+    ;;               (lambda (frame)
+    ;;                 (load-theme 'doom-nord t)))
+    ;;     (load-theme 'doom-nord t))
+    ;; (setq custom-safe-themes t)
+
+    ;; (load-theme 'doom-nord t)
+
+    (when (display-graphic-p)
+      (setq custom-safe-themes t)
+      (load-theme 'doom-nord t))
 
     ;; enable flashing mode-line on errors
     (doom-themes-visual-bell-config)
